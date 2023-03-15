@@ -126,7 +126,6 @@
         )
     )
     (person (name ?tempgr) (sex male))
-    
     =>
     (printout t ?p1 " is " ?p2 "'s aunt." crlf)
 )
