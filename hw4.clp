@@ -30,36 +30,64 @@
 )
 
 (defrule get-message
-    (declare (salience 100))
     (not (translation (string $?)(code $?)))
     =>
     (printout t "Enter a message (<Enter> to end): ")
     (bind ?input (explode$ (readline)))
     (assert (translation (string) (code ?input)))
-    (printout t ?input crlf)
+    ;(printout t ?input crlf)
+)
+
+(defrule end
+    (translation (string) (code))
+    =>
+    (halt)
+)
+
+(defrule not-match-1
+    (declare (salience 10))
+    ?trans <- (translation (string $?) (code $? // $?))
+    =>
+    (retract ?trans)
+    (printout t "Can't decode this message." crlf)
+)
+
+(defrule not-match-2
+    (declare (salience 10))
+    ?trans <- (translation (string $?) (code $? /))
+    =>
+    (retract ?trans)
+    (printout t "Can't decode this message." crlf)
+)
+
+(defrule not-match-3
+    (declare (salience 10))
+    ?trans <- (translation (string $?) (code / $?))
+    =>
+    (retract ?trans)
+    (printout t "Can't decode this message." crlf)
 )
 
 (defrule conver
-    (declare (salience 50))
     ?oldtranslation <- (translation (string $?oldstr) (code $?thiscode / $?rest))
     (conversion (character ?thischar) (morse-code $?thiscode))
     =>
     (retract ?oldtranslation)
     (assert (translation (string $?oldstr ?thischar) (code $?rest)))
-    (printout t "conver" crlf)
+    ;(printout t "conver" crlf)
 )
 
 (defrule conver-lastchar
-    (declare (salience 50))
     ?oldtranslation <- (translation (string $?oldstr) (code $?thiscode))
-    ;(conversion (character ?thischar) (morse-code $?thiscode))
+    (conversion (character ?thischar) (morse-code $?thiscode))
     =>
-    ;(retract ?oldtranslation)
-    ;(assert (translation (string $?oldstr ?thischar) (code)))
-    (printout t "conver-lastchar: " ?thiscode crlf)
+    (retract ?oldtranslation)
+    (assert (translation (string $?oldstr ?thischar) (code)))
+    ;(printout t "conver-lastchar: " ?thiscode crlf)
 )
 
 (defrule not-match
+    (declare (salience -10))
     ?trans <- (translation (string $?) (code ?something $?))
     =>
     (retract ?trans)
@@ -70,12 +98,5 @@
     ?trans <- (translation (string $?str) (code))
     =>
     (retract ?trans)
-    (printout t "The message is " (implode$ ?str) crlf)
-)
-
-(defrule end
-    (declare (salience 50))
-    (translation (string) (code))
-    =>
-    (halt)
+    (printout t "The message is " (implode$ $?str) crlf)
 )
