@@ -46,7 +46,8 @@
 
 (defrule not-match-1
     (declare (salience 10))
-    ?trans <- (translation (string $?) (code $? // $?))
+    (or ?trans <- (translation (string $?) (code $? / / $?))
+                ?trans <- (translation (string $?) (code $? / / $?)))
     =>
     (retract ?trans)
     (printout t "Can't decode this message." crlf)
