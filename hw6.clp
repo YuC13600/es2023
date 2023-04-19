@@ -39,26 +39,14 @@
     (sort (super Bison) (sub Bonasus))
     (sort (super Bubalus) (sub Arnee))
     (sort (super Tamias) (sub Ochrogenys))
-    (phase input01)
+    (phase input)
     (full01 undo)
     (full02 undo)
 )
 
-(defrule input01
+(defrule input
     (declare (salience 100))
-    (phase input01)
-    =>
-    (printout t "Enter sort #1: ")
-    (bind ?input1 (read))
-    (printout t "Enter sort #2: ")
-    (bind ?input2 (read))
-    (assert (relationship (sort01 ?input1) (sort02 ?input2)))
-    (assert (full01 undo))
-    (assert (full02 undo))
-)
-(defrule input02
-    (declare (salience 100))
-    (phase input02)
+    (phase input)
     =>
     (printout t "Enter sort #1: ")
     (bind ?input1 (read))
@@ -122,17 +110,10 @@
     (retract ?f1)
 )
 
-(defrule change-phase01
+(defrule change-phase
     (declare (salience -10))
-    ?f1 <- (phase input01)
+    ?f1 <- (phase input)
     =>
     (retract ?f1)
-    (assert (phase input02))
-)
-(defrule change-phase02
-    (declare (salience -10))
-    ?f1 <- (phase input02)
-    =>
-    (retract ?f1)
-    (assert (phase input01))
+    (assert (phase input))
 )
