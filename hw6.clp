@@ -39,9 +39,8 @@
     (sort (super Bison) (sub Bonasus))
     (sort (super Bubalus) (sub Arnee))
     (sort (super Tamias) (sub Ochrogenys))
+    (fullpath undo)
     (phase input)
-    (full01 undo)
-    (full02 undo)
 )
 
 (defrule input
@@ -53,50 +52,41 @@
     (printout t "Enter sort #2: ")
     (bind ?input2 (read))
     (assert (relationship (sort01 ?input1) (sort02 ?input2)))
-    (assert (full01 undo))
-    (assert (full02 undo))
+    (assert (fullpath undo))
 )
 
 (defrule full-path-01
     (declare (salience 80))
-    (full01 undo)
-    ?f1 <- (relationship (sort01 ?this $?back) (sort02 $?rest))
+    (fullpath undo)
+    ?f1 <- (relationship (sort01 ?this&~Mammalia $?back) (sort02 $?rest))
     (sort (super ?this_super) (sub ?this))
     =>
     (retract ?f1)
     (assert (relationship (sort01 ?this_super ?this $?back) (sort02 $?rest)))
 )
 
-(defrule full01-check
-    (declare (salience 80))
-    ?f1 <- (full01 undo)
-    (relationship (sort01 Mammalia $?rest01) (sort02 $?rest02))
-    =>
-    (retract ?f1)
-)
 
 (defrule full-path-02
     (declare (salience 70))
-    (full02 undo)
-    ?f1 <- (relationship (sort01 $?rest) (sort02 ?this $?back))
+    (fullpath undo)
+    ?f1 <- (relationship (sort01 Mammalia $?rest) (sort02 ?this&~Mammalia $?back))
     (sort (super ?this_super) (sub ?this))
     =>
     (retract ?f1)
     (assert (relationship (sort01 $?rest) (sort02 ?this_super ?this $?back)))
 )
 
-(defrule full02-check
-    (declare (salience 70))
-    ?f1 <- (full02 undo)
-    (relationship (sort01 $?rest01) (sort02 Mammalia $?rest02))
+(defrule full-path-done
+    (declare (salience 65))
+    (relationship (sort01 Mammalia $?) (sort02 Mammalia $?))
+    ?f1 <- (fullpath undo)
     =>
     (retract ?f1)
 )
 
 (defrule erase-dep
     (declare (salience 60))
-    ?f1 <- (relationship (sort01 ?head01 $?rest01) (sort02 ?head02 $?rest02))
-    (test (eq ?head01 ?head02))
+    ?f1 <- (relationship (sort01 ?head01 $?rest01) (sort02 ?head02&?head01 $?rest02))
     =>
     (retract ?f1)
     (assert (relationship (sort01 $?rest01) (sort02 $?rest02)))
