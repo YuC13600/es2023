@@ -23,7 +23,7 @@
     =>
     (retract ?f)
     (printout t "Please input binary number #" (+ ?n 1) ": ")
-    (assert (binary-# (name (+?n 1)) (digits (explode$ (readline)))))
+    (assert (binary-# (name (+ ?n 1)) (digits (explode$ (readline)))))
     (assert (number (+ ?n 1)))
 )
 
