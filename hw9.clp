@@ -75,7 +75,7 @@
     ?f <- (binary-adder (name-1 $?na1) (name-2 $?na2)(carry ?c) (#-1 $?n1 ?d1) (#-2) (result $?r))
     =>
     (modify ?f (carry (integer (/ (+ ?c ?d1) 2)))
-        (result (mod (+ ?c ?d1) 2) ?r) (#-1 ?n1) (#-2))
+        (result (mod (+ ?c ?d1) 2) ?r) (#-1 ?n1) )
 )
 
 (defrule adder-case-3
@@ -83,7 +83,7 @@
     ?f <- (binary-adder (name-1 $?na1) (name-2 $?na2) (carry ?c) (#-1) (#-2 $?n2 ?d2) (result $?r))
     =>
     (modify ?f (carry (integer (/ (+ ?c ?d2) 2)))
-        (result (mod (+ ?c ?d2) 2) ?r) (#-1) (#-2 ?n2))
+        (result (mod (+ ?c ?d2) 2) ?r) (#-2 ?n2))
 )
 
 (defrule adder-case-4
